@@ -47,5 +47,5 @@ This project provides an interface to fetch, store, and display CVE (Common Vuln
 #### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/bolemharsha/SECURIN.git
+https://github.com/25roys25/NVD-assessment.git
 cd SECURIN
