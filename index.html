@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVE Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CVE List</h1>
+
+
+    <table id="cveTable">
+        <thead>
+            <tr>
+                <th>CVE ID</th>
+                <th>Description</th>
+                <th>Score</th>
+                <th>Published Date</th>
+                <th>Last Modified Date</th>
+            </tr>
+        </thead>
+        <tbody> 
+        </tbody>
+    </table>
+ 
+    <div class="pagination">
+        <button onclick="fetchCveData(0)">Page 1</button>
+        <button onclick="fetchCveData(10)">Page 2</button>
+        <button onclick="fetchCveData(20)">Page 3</button>
+    </div>
+
+    <script> 
+        function fetchCveData(startIndex) {
+            fetch(/cves?startIndex=${startIndex}&resultsPerPage=10)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("cveTable").getElementsByTagName("tbody")[0];
+                    tableBody.innerHTML = "";   
+
+                    data.forEach(cve => {
+                        const row = document.createElement("tr");
+
+                        const cveIdCell = document.createElement("td");
+                        cveIdCell.textContent = cve.cve.CVE_data_meta.ID;
+                        row.appendChild(cveIdCell);
+
+                        const descriptionCell = document.createElement("td");
+                        descriptionCell.textContent = cve.cve.description.description_data[0].value;
+                        row.appendChild(descriptionCell);
+
+                        const scoreCell = document.createElement("td");
+                        scoreCell.textContent = cve.impact.baseMetricV2 ? cve.impact.baseMetricV2.baseScore : "N/A";
+                        row.appendChild(scoreCell);
+
+                        const publishedDateCell = document.createElement("td");
+                        publishedDateCell.textContent = cve.publishedDate;
+                        row.appendChild(publishedDateCell);
+
+                        const lastModifiedDateCell = document.createElement("td");
+                        lastModifiedDateCell.textContent = cve.lastModifiedDate;
+                        row.appendChild(lastModifiedDateCell);
+
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+        fetchCveData(0);
+    </script>
+
+</body>
+</html>
